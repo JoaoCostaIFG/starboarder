@@ -100,6 +100,28 @@ Updating:
 git pull && docker compose pull && docker compose up -d
 ```
 
+## Releases and update notifications
+
+`docker-compose.yml` pins an exact image version (`ghcr.io/joaocostaifg/starboarder:0.1.0`).
+Cutting a release looks like:
+
+```bash
+git tag v0.1.1 && git push origin v0.1.1
+```
+
+That single push produces, automatically:
+
+- image tags `0.1.1`, `0.1`, and `1` on GHCR (multi-arch), and
+- a GitHub Release with generated release notes.
+
+[Renovate](https://docs.renovatebot.com/) then picks up the new version tag
+from the compose file and opens an update PR (see `renovate.json`). Note that
+Renovate can only see the package once its GHCR visibility is **public**
+(private packages need `hostRules` credentials in your Renovate config).
+
+Version tags are plain semver derived from the git tag (`v1.2.3` → `1.2.3`,
+`1.2`, `1`); `latest` and `main` always track the default branch.
+
 ### Same-server internal routing (optional optimization)
 
 If Fluxer runs in Docker on the same host, the bot can talk to the `api` and
