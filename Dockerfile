@@ -13,6 +13,14 @@ RUN npm run build
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production
+
+LABEL org.opencontainers.image.title="starboarder" \
+	org.opencontainers.image.description="Starboard bot for self-hosted Fluxer instances: archives starred messages to a Starboard channel" \
+	org.opencontainers.image.source=https://github.com/JoaoCostaIFG/starboarder \
+	org.opencontainers.image.url=https://github.com/JoaoCostaIFG/starboarder \
+	org.opencontainers.image.licenses=MIT \
+	org.opencontainers.image.authors="JoaoCostaIFG"
+
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev || npm install --omit=dev
 COPY --from=build /app/dist ./dist

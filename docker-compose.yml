@@ -1,7 +1,11 @@
 services:
   starboarder:
+    # Published multi-arch image (linux/amd64 + linux/arm64).
+    # `build: .` below makes `docker compose up --build` build locally and tag
+    # it with this name; on a deploy box you can drop the build line and use
+    # `docker compose pull && docker compose up -d` instead.
+    image: ghcr.io/joaocostaifg/starboarder:latest
     build: .
-    image: starboarder
     restart: unless-stopped
     env_file: .env
     mem_limit: 128m
@@ -15,10 +19,9 @@ services:
     # origin. Verify the network name first:  docker network ls | grep fluxer
     # (the default self-hosting stack creates "fluxer_fluxer").
     #
-    # Then comment out nothing above, uncomment the block below, and set
-    # API_URL/GATEWAY_URL in your .env as well (they are harmless if left
-    # set when you later detach from the network — the bot will just fail
-    # to connect until you unset them).
+    # Then set API_URL/GATEWAY_URL in your .env as well (they are harmless if
+    # left set when you later detach from the network — the bot will just
+    # fail to connect until you unset them).
     # ---------------------------------------------------------------------
     # networks: [fluxer_fluxer]
 

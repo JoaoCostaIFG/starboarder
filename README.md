@@ -72,22 +72,32 @@ name, so it works in every guild it is installed in.
 
 ## Running
 
+The image is published to GitHub Container Registry for **linux/amd64 and
+linux/arm64**: [`ghcr.io/joaocostaifg/starboarder`](https://github.com/JoaoCostaIFG/pkgs/container/starboarder).
+Tags: `latest`, `main`, `1.2.3`/`1.2`/`1` for `v*` releases, and `sha-<commit>`.
+
 ### Docker (recommended)
 
 ```bash
-docker compose up -d --build
-docker logs -f starboarder-starboarder-1   # or: docker compose logs -f
+docker compose pull && docker compose up -d
+docker compose logs -f
 ```
 
-The image is built locally; no registry involved. The dedup store lives in the
-`starboarder-data` volume. The container healthcheck watches a heartbeat file
-the bot touches whenever the gateway connection is alive, so a wedged
-connection ends in a container restart (`restart: unless-stopped`).
+The dedup store lives in the `starboarder-data` volume. The container
+healthcheck watches a heartbeat file the bot touches whenever the gateway
+connection is alive, so a wedged connection ends in a container restart
+(`restart: unless-stopped`).
+
+To build locally instead of pulling (e.g. for development):
+
+```bash
+docker compose up -d --build
+```
 
 Updating:
 
 ```bash
-git pull && docker compose up -d --build
+git pull && docker compose pull && docker compose up -d
 ```
 
 ### Same-server internal routing (optional optimization)
