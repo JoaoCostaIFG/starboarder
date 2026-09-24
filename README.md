@@ -122,31 +122,22 @@ Renovate can only see the package once its GHCR visibility is **public**
 Version tags are plain semver derived from the git tag (`v1.2.3` → `1.2.3`,
 `1.2`, `1`); `latest` and `main` always track the default branch.
 
-### Same-server internal routing (optional optimization)
+### Same-server deployments
 
-If Fluxer runs in Docker on the same host, the bot can talk to the `api` and
-`gateway` containers directly instead of hairpinning through the public
-origin:
+If Fluxer runs in Docker on the same host, keep routing through the public
+origin (`INSTANCE_URL`). The bot's traffic hairpins through the edge proxy,
+which is fine for a friends-server bot.
 
-1. Find the network name (the self-hosting stack with `name: fluxer` creates
-   `fluxer_fluxer`):
+**Do not point `API_URL` at the `api` container directly.** Self-hosted Fluxer
+defaults to `FLUXER_TRUST_CLIENT_IP_HEADER=true`, which makes the API reject
+every request that lacks a valid `x-forwarded-for` header — that is, anything
+that did not come through the edge proxy — with `403 Forbidden [FORBIDDEN]`.
+The gateway has no such check, which makes this failure confusing: the bot
+connects, receives reaction events, and then every HTTP call fails.
 
-   ```bash
-   docker network ls | grep fluxer
-   ```
-
-2. In `docker-compose.yml`, uncomment the `networks: [fluxer_fluxer]` line and
-   the matching `networks:` section at the bottom.
-3. In `.env`, set:
-
-   ```bash
-   API_URL=http://api:8080
-   GATEWAY_URL=ws://gateway:8080
-   ```
-
-   When both are set, instance discovery (`/.well-known/fluxer`) is skipped.
-   Keep `INSTANCE_URL` (or set `WEB_APP_BASE_URL`) — jump links must still use
-   the public URL humans open.
+Container-to-container routing only works if you set
+`FLUXER_TRUST_CLIENT_IP_HEADER=false` for the Fluxer stack — weigh that
+carefully, since per-IP rate limiting and logging degrade without it.
 
 ### Without Docker
 

@@ -48,11 +48,14 @@ export class FluxerApi {
 			try {
 				const errorBody = (await response.json()) as ErrorBody;
 				code = errorBody.code;
-				message = errorBody.message ? `${message}: ${errorBody.message}` : message;
+				if (errorBody.message && errorBody.message !== code) {
+					message = `${message}: ${errorBody.message}`;
+				}
 			} catch {
 				// Non-JSON error body; keep the status line
 			}
-			throw new ApiError(response.status, code, `${method} ${path} failed: ${message}`);
+			const codeSuffix = code === undefined ? '' : ` [${code}]`;
+			throw new ApiError(response.status, code, `${method} ${path} failed: ${message}${codeSuffix}`);
 		}
 
 		if (response.status === 204) return undefined as T;
