@@ -4,7 +4,7 @@
 	"description": "Starboard bot for self-hosted Fluxer instances: archives starred messages to a Starboard channel",
 	"type": "module",
 	"private": true,
-	"license": "MIT",
+	"license": "EUPL-1.2",
 	"engines": {
 		"node": ">=20"
 	},

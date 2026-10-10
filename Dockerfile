@@ -18,7 +18,7 @@ LABEL org.opencontainers.image.title="starboarder" \
 	org.opencontainers.image.description="Starboard bot for self-hosted Fluxer instances: archives starred messages to a Starboard channel" \
 	org.opencontainers.image.source=https://github.com/JoaoCostaIFG/starboarder \
 	org.opencontainers.image.url=https://github.com/JoaoCostaIFG/starboarder \
-	org.opencontainers.image.licenses=MIT \
+	org.opencontainers.image.licenses=EUPL-1.2 \
 	org.opencontainers.image.authors="JoaoCostaIFG"
 
 COPY package.json package-lock.json* ./

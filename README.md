@@ -169,4 +169,9 @@ npm start          # or: npm run dev for hot-reload during development
 
 ## License
 
-MIT
+European Union Public License v1.2 ([EUPL-1.2](LICENSE)) — a copyleft
+license created by the European Commission. In short: you may use, modify,
+and distribute this software, including commercially, as long as you pass
+along the source code (including your modifications) under the same license
+or a [compatible](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
+one. See [LICENSE](LICENSE) for the full terms.
