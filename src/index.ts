@@ -31,7 +31,9 @@ async function main(): Promise<void> {
 		staticCdnBase: endpoints.staticCdn,
 	});
 
-	const gateway = new GatewayClient(endpoints.gateway, config.botToken);
+	const gateway = new GatewayClient(endpoints.gateway, config.botToken, {
+		watchdogMarginMs: config.watchdogMarginMs,
+	});
 	gateway.on('ready', (user) => {
 		starboard.setBotUserId(user.id);
 	});

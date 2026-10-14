@@ -18,6 +18,11 @@ export interface Config {
 	gatewayUrl?: string;
 	/** Directory for the persistent dedup store. */
 	dataDir: string;
+	/**
+	 * Slack added to two heartbeat intervals before the gateway silence
+	 * watchdog drops a quiet connection. Optional; mainly a test knob.
+	 */
+	watchdogMarginMs?: number;
 }
 
 function env(name: string): string | undefined {
@@ -91,6 +96,17 @@ export function loadConfig(): Config {
 		throw new Error(`THRESHOLD must be a positive integer, got: ${thresholdRaw}`);
 	}
 
+	const watchdogMarginRaw = env('GATEWAY_WATCHDOG_MARGIN_MS');
+	let watchdogMarginMs: number | undefined;
+	if (watchdogMarginRaw !== undefined) {
+		watchdogMarginMs = Number.parseInt(watchdogMarginRaw, 10);
+		if (!Number.isInteger(watchdogMarginMs) || watchdogMarginMs < 0) {
+			throw new Error(
+				`GATEWAY_WATCHDOG_MARGIN_MS must be a non-negative integer, got: ${watchdogMarginRaw}`,
+			);
+		}
+	}
+
 	return {
 		instanceUrl,
 		botToken,
@@ -101,5 +117,6 @@ export function loadConfig(): Config {
 		apiUrl: apiUrlRaw ? parseHttpUrl('API_URL', apiUrlRaw) : undefined,
 		gatewayUrl: gatewayUrlRaw ? parseWsUrl('GATEWAY_URL', gatewayUrlRaw) : undefined,
 		dataDir: env('DATA_DIR') ?? 'data',
+		watchdogMarginMs,
 	};
 }
