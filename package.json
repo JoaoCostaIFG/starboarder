@@ -1,6 +1,6 @@
 {
 	"name": "starboarder",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "Starboard bot for self-hosted Fluxer instances: archives starred messages to a Starboard channel",
 	"type": "module",
 	"private": true,
