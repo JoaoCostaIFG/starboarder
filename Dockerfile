@@ -27,7 +27,16 @@ LABEL org.opencontainers.image.title="starboarder" \
 	org.opencontainers.image.authors="JoaoCostaIFG"
 
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev || npm install --omit=dev
+# Install prod deps, then drop the package managers (npm, corepack, yarn) in
+# the SAME layer so they never reach the final image: they are build-time
+# tooling only, and their bundled dependencies are the source of every known
+# HIGH CVE in this image (brace-expansion, pacote, sigstore, ip-address,
+# picomatch). The runtime only needs the node binary.
+RUN npm ci --omit=dev || npm install --omit=dev \
+	&& npm cache clean --force \
+	&& rm -rf /usr/local/lib/node_modules /opt/yarn-v1.22.22 \
+		/usr/local/bin/npm /usr/local/bin/npx \
+		/usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
 COPY --from=build /app/dist ./dist
 RUN mkdir -p /app/data && chown -R node:node /app
 USER node
